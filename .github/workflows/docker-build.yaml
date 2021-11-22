@@ -1,0 +1,14 @@
+name: docker-build
+
+on: [push]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: build & push docker image
+        run: make docker-push
