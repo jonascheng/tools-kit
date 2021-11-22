@@ -1,4 +1,4 @@
-FROM debian:stable as build-env
+FROM golang:1.17-buster as build-env
 
 # essential packages
 RUN apt-get update && apt-get install -y \
@@ -17,15 +17,15 @@ RUN cmake -DgRPC_INSTALL=ON /var/local/git/grpc \
 RUN cmake -DgRPC_BUILD_TESTS=ON -DgRPC_INSTALL=ON /var/local/git/grpc \
     && make grpc_cli
 
-# release
-FROM debian:stable-slim
+# protoc-gen-go
+RUN go install github.com/golang/protobuf/protoc-gen-go@latest
 
+# install tools-kit
 RUN apt-get update && apt-get install -y \
     tcpdump ncat net-tools iproute2 curl wget \
+    nano vim \
     && apt-get clean
 
-COPY --from=build-env /usr/local/bin /usr/local/bin
-COPY --from=build-env /var/local/git/grpc/cmake/build/grpc_cli /usr/local/bin/grpc_cli
-
-ENTRYPOINT /bin/bash
+ENV GO111MODULE=on
+ENV PATH="$PATH:$(go env GOPATH)/bin"
 
