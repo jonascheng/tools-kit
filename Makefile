@@ -15,12 +15,8 @@ ifndef DOCKERHUB_PASSWORD
 endif
 	${DOCKER} login --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
 
-.PHONY: docker-build
-docker-build: clean ## build docker image with cache
-	${DOCKER} build --pull -t ${REGISTRY}/${APPLICATION}:${COMMIT_SHA} .
-
 .PHONY: docker-build-release
-docker-build-release: clean ## build docker image without cache (slower than make docker-build)
+docker-build-release: ## build docker image without cache (slower than make docker-build)
 	${DOCKER} build --pull --no-cache -t ${REGISTRY}/${APPLICATION}:${COMMIT_SHA} .
 
 .PHONY: docker-push
