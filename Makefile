@@ -15,13 +15,18 @@ ifndef DOCKERHUB_PASSWORD
 endif
 	${DOCKER} login --username ${DOCKERHUB_USERNAME} --password ${DOCKERHUB_PASSWORD}
 
+.PHONY: docker-build
+docker-build:
+	${DOCKER} build --pull -t ${REGISTRY}/${APPLICATION}:${COMMIT_SHA} .
+	${DOCKER} tag ${REGISTRY}/${APPLICATION}:${COMMIT_SHA} ${REGISTRY}/${APPLICATION}:latest
+
 .PHONY: docker-build-release
 docker-build-release: ## build docker image without cache (slower than make docker-build)
 	${DOCKER} build --pull --no-cache -t ${REGISTRY}/${APPLICATION}:${COMMIT_SHA} .
+	${DOCKER} tag ${REGISTRY}/${APPLICATION}:${COMMIT_SHA} ${REGISTRY}/${APPLICATION}:latest
 
 .PHONY: docker-push
 docker-push: docker-build-release docker-login ## push the docker image to registry
-	${DOCKER} tag ${REGISTRY}/${APPLICATION}:${COMMIT_SHA} ${REGISTRY}/${APPLICATION}:latest
 	${DOCKER} push ${REGISTRY}/${APPLICATION}:${COMMIT_SHA}
 	${DOCKER} push ${REGISTRY}/${APPLICATION}:latest
 
