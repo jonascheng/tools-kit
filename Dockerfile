@@ -20,12 +20,19 @@ RUN cmake -DgRPC_BUILD_TESTS=ON -DgRPC_INSTALL=ON /var/local/git/grpc \
 # protoc-gen-go
 RUN go install github.com/golang/protobuf/protoc-gen-go@latest
 
+# release
+FROM golang:1.17-buster
+
+ENV GO111MODULE=on
+ENV PATH="$PATH:$(go env GOPATH)/bin"
+
 # install tools-kit
 RUN apt-get update && apt-get install -y \
     tcpdump ncat net-tools iproute2 curl wget \
     nano vim \
     && apt-get clean
 
-ENV GO111MODULE=on
-ENV PATH="$PATH:$(go env GOPATH)/bin"
+COPY --from=build-env /usr/local/bin /usr/local/bin
+COPY --from=build-env /var/local/git/grpc/cmake/build/grpc_cli /usr/local/bin/grpc_cli
+COPY --from=build-env /go/bin /go/bin
 
