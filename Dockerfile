@@ -27,8 +27,10 @@ ENV GO111MODULE=on
 ENV PATH="$PATH:$(go env GOPATH)/bin"
 
 # install tools-kit
+# dsniff: tcpkill
+# net-tools: ifconfig
 RUN apt-get update && apt-get install -y \
-    tcpdump ncat net-tools iproute2 curl wget \
+    dsniff tcpdump ncat net-tools iproute2 curl wget \
     nano vim \
     && apt-get clean
 
