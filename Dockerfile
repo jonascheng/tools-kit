@@ -29,9 +29,10 @@ ENV PATH="$PATH:$(go env GOPATH)/bin"
 # install tools-kit
 # dsniff: tcpkill
 # net-tools: ifconfig
+# journalctl: systemd
 RUN apt-get update && apt-get install -y \
     dsniff tcpdump ncat net-tools iproute2 curl wget \
-    nano vim \
+    nano vim systemd \
     && apt-get clean
 
 COPY --from=build-env /usr/local/bin /usr/local/bin
